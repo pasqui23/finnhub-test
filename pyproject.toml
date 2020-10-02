@@ -7,6 +7,7 @@ authors = ["Pasquale <p3dimaria@hotmail.it>"]
 [tool.poetry.dependencies]
 python = "^3.8"
 plotext = "^1.0.10"
+finnhub-python = "^2.2.1"
 
 [tool.poetry.dev-dependencies]
 
