@@ -8,6 +8,8 @@ authors = ["Pasquale <p3dimaria@hotmail.it>"]
 python = "^3.8"
 plotext = "^1.0.10"
 finnhub-python = "^2.2.1"
+sqlalchemy = "^1.3.19"
+configargparse = "^1.2.3"
 
 [tool.poetry.dev-dependencies]
 
