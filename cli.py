@@ -20,14 +20,15 @@ def main():
     default_config_files=["~/.config/finnhub-demo.ini"],
     args_for_setting_config_path=["-c", "--config"])
     
-  p.add("--api-token")
-  p.add("--currency", default="USD")
-  p.add("--resolution", default="D")
+  #not all ops require connecting to finnhub
+  p.add("--api-token", default="", help="API token to pass to finnhub.io")
+  p.add("--currency", default="USD", help="Symbol of currency used th display prices")
+  p.add("--resolution", default="D", help="Resolution of graph.See also https://finnhub.io/docs/api#forex-candles and https://finnhub.io/docs/api#stock-candles")
   from time import time
-  p.add("--to", type=int, default=time())
+  p.add("--to", type=int, default=time(), help="End of the graph timeline as a UNIX epoch")
   # A year of data by default
-  p.add("--period", type=int, default=8600 * 30 * 12)
-  p.add("--db-url", default="sqlite://")
+  p.add("--period", type=int, default=8600 * 30 * 12, help="Length of the graph timeline in seconds")
+  p.add("--db-url", default="sqlite:///local.db", help="URL of db used. See also https://docs.sqlalchemy.org/en/13/core/engines.html#database-urls")
   p.add("command", choices=Cmd, type=Cmd)
   p.add("symbol")
   a = p.parse()
@@ -35,6 +36,7 @@ def main():
   _from = a.to - a.period
   import finnhub #never reinvent the wheel
   cl = finnhub.Client(a.api_token)
+  current_rate = cl.forex_rates(base="USD")["quote"][a.currency]
   import models as m
   session = m.mk_session(a.db_url)
   
@@ -59,11 +61,12 @@ def main():
   elif a.command == Cmd.save_stock:add(m.Stock)
   elif a.command == Cmd.print_forex:plot(m.Forex,1)
   elif a.command == Cmd.print_stock:
-    plot(m.Stock, cl.forex_rates(base="USD")["quote"][a.currency])
+    plot(m.Stock, current_rate)
   else:
     for m in query(m.Stock):
       for k in iter(model.profile):
         print(k, ":", model.profile[k])
       print("Current price:", model.current_price * conversion_rate)
+      print()
       
 if __name__ == "__main__": main()
