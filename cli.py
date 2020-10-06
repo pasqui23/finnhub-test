@@ -23,12 +23,14 @@ def main():
   #not all ops require connecting to finnhub
   p.add("--api-token", default="", help="API token to pass to finnhub.io")
   p.add("--currency", default="USD", help="Symbol of currency used th display prices")
-  p.add("--resolution", default="D", help="Resolution of graph.See also https://finnhub.io/docs/api#forex-candles and https://finnhub.io/docs/api#stock-candles")
+  p.add("--resolution", default="D",
+    help="Resolution of graph.See also https://finnhub.io/docs/api#forex-candles and https://finnhub.io/docs/api#stock-candles")
   from time import time
   p.add("--to", type=int, default=time(), help="End of the graph timeline as a UNIX epoch")
   # A year of data by default
   p.add("--period", type=int, default=8600 * 30 * 12, help="Length of the graph timeline in seconds")
-  p.add("--db-url", default="sqlite:///local.db", help="URL of db used. See also https://docs.sqlalchemy.org/en/13/core/engines.html#database-urls")
+  p.add("--db-url", default="sqlite:///local.db",
+    help="URL of db used. See also https://docs.sqlalchemy.org/en/13/core/engines.html#database-urls")
   p.add("command", choices=Cmd, type=Cmd)
   p.add("symbol")
   a = p.parse()
